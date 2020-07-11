@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Locadora Raiz | Semana JavaScript Raiz | Programador a A Bordo
+    </title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container-fluid" id="app"></div>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
+    <script>
+      const filmes = [
+        {
+          titulo: "Filme XPTO",
+          imagem: "http://lorempixel.com/300/150",
+          categorias: ["001", "003"],
+        },
+        {
+          titulo: "Filme XYZ",
+          imagem: "http://lorempixel.com/300/150?2",
+          categorias: ["001", "003", "004"],
+        },
+        {
+          titulo: "Filme Raiz",
+          imagem: "http://lorempixel.com/300/150?3",
+          categorias: ["003", "004"],
+        },
+        {
+          titulo: "Filme A Bordo",
+          imagem: "http://lorempixel.com/300/150?4",
+          categorias: ["002", "003", "004"],
+        },
+        {
+          titulo: "Filme TOP",
+          imagem: "http://lorempixel.com/300/150?5",
+          categorias: ["001", "002", "003", "004"],
+        },
+      ];
+
+      const categorias = [
+        { id: "001", titulo: "Drama" },
+        { id: "002", titulo: "Suspense" },
+        { id: "003", titulo: "Nacionais" },
+        { id: "004", titulo: "Documentário" },
+      ];
+
+      const state = { filmes, categorias };
+
+      function pegaCategoria(catId) {
+        return categorias.find(function (categoria) {
+          return categoria.id === catId;
+        });
+      }
+
+      const e = React.createElement;
+
+      function CardComponent(props) {
+        return e(
+          "div",
+          { className: "card" },
+          e("img", { className: "card-img-top", src: props.imagem }),
+          e(
+            "div",
+            { className: "card-body" },
+            e("h3", { className: "card-title" }, props.titulo),
+            e(
+              "p",
+              { className: "card-text" },
+              props.categorias.map(function (catId, catIndex) {
+                return e(
+                  "a",
+                  {
+                    href: "#",
+                    className: "badge badge-secondary",
+                    key: `pos-${catIndex}`,
+                  },
+                  pegaCategoria(catId).titulo
+                );
+              })
+            )
+          )
+        );
+      }
+
+      function CardsComponent({ data }) {
+        return data.map(function (filme, filmeIndex) {
+          return e(CardComponent, { ...filme, key: `pos-${filmeIndex}` });
+        });
+      }
+
+      function SelectOptions({ categorias }) {
+        return categorias.map(function (categoria, catIndex) {
+          return e(
+            "option",
+            { value: categoria.id, key: `pos-${catIndex}` },
+            categoria.titulo
+          );
+        });
+      }
+
+      function FormComponent({ categorias, adicionaFilme }) {
+        const [formData, setFormData] = React.useState({
+          titulo: "",
+          imagem: "",
+          categorias: [],
+        });
+
+        function handle(e) {
+          e.preventDefault();
+          adicionaFilme(formData);
+        }
+
+        function setValue(key) {
+          return function (ev) {
+            setFormData({
+              ...formData,
+              [key]: ev.target.value,
+            });
+          };
+        }
+
+        function handleSelect(ev) {
+          const options = [...ev.target.selectedOptions].map(
+            (opt) => opt.value
+          );
+          setFormData({
+            ...formData,
+            categorias: [...options],
+          });
+        }
+
+        return e(
+          "form",
+          { id: "formulario_filme", onSubmit: handle },
+          e(
+            "div",
+            { className: "form-group" },
+            e("label", { htmlFor: "titulo " }, "Título"),
+            e("input", {
+              type: "text",
+              name: "titulo",
+              className: "form-control",
+              id: "titulo",
+              value: formData["titulo"],
+              onChange: setValue("titulo"),
+            })
+          ),
+          e(
+            "div",
+            { className: "form-group" },
+            e("label", { htmlFor: "imagem " }, "Foto"),
+            e("input", {
+              type: "text",
+              name: "imagem",
+              className: "form-control",
+              id: "imagem",
+              value: formData["imagem"],
+              onChange: setValue("imagem"),
+            })
+          ),
+          e(
+            "div",
+            { className: "form-group" },
+            e("label", { htmlFor: "categoria " }, "Categoria"),
+            e(
+              "select",
+              {
+                value: formData["categorias"],
+                onChange: handleSelect,
+                name: "categorias",
+                className: "form-control",
+                id: "categorias",
+                multiple: true,
+              },
+              e(SelectOptions, { categorias })
+            )
+          ),
+          e(
+            "button",
+            { type: "submit", className: "btn btn-primary" },
+            "Cadastrar"
+          )
+        );
+      }
+
+      function AppComponent({ filmes, categorias }) {
+        const [filmesLista, setFilmes] = React.useState(filmes);
+
+        function adicionaFilme(filme) {
+          setFilmes([...filmesLista, filme]);
+        }
+        return e(
+          "div",
+          { className: "row" },
+          e(
+            "div",
+            { className: "col-sm-12 col-md-3" },
+            e("h2", null, "Cadastro de filme"),
+            e(FormComponent, { adicionaFilme, categorias })
+          ),
+          e(
+            "div",
+            { className: "col-sm-12 col-md-9" },
+            e(
+              "div",
+              { id: "cards_container", className: "card-columns" },
+              e(CardsComponent, { data: filmesLista })
+            )
+          )
+        );
+      }
+
+      ReactDOM.render(e(AppComponent, state), document.querySelector("#app"));
+    </script>
+  </body>
+</html>
