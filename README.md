@@ -2,8 +2,7 @@
 
 # Semana JavaScript Raiz
 
-####Porque eu utilizo React em minhas aplicações? Porque não faço o que faço com JS puro? 🤔🤔
-[I'm an inline-style link with title]
+#### Porque eu utilizo React em minhas aplicações? Porque não faço o que faço com JS puro? 🤔🤔
 
 Essa pergunta feita por Ayrton Teshima dono do canal [Programador a Bordo](https://www.youtube.com/c/ProgramadoraBordo/featured) durante a segunda aula da Semana JavaScript Raiz e me fez parar e refletir o porque desenvolvo da forma que desenvolvo.
 
